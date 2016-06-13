@@ -1,0 +1,315 @@
+USE zhcTestDB;
+
+CREATE TABLE Student (
+	Sno CHAR (5) NOT NULL UNIQUE,
+	Sname CHAR (20),
+	Ssex CHAR (2),
+	Sage INT,
+	Sdept CHAR (15)
+);
+
+CREATE TABLE Course (
+	Cno CHAR (5) NOT NULL UNIQUE,
+	Cname CHAR (20),
+	Cpno CHAR (2),
+	Ccredit INT
+);
+
+CREATE TABLE SC (
+	Sno CHAR (5) NOT NULL UNIQUE,
+	Cno CHAR (20),
+	Grade INT
+);
+
+ALTER TABLE Student ADD Scome DATE;
+
+ALTER TABLE Student MODIFY Sage SMALLINT;
+
+ALTER TABLE Student DROP UNIQUE (Sno);
+
+DROP TABLE Student;
+
+CREATE CLUSTER INDEX Strusname ON Student (Sname);
+
+CREATE UNIQUE INDEX Stusno ON Student (Sno);
+
+DROP INDEX Stusno;
+
+SELECT
+	Sno,
+	Sname
+FROM
+	Student;
+
+SELECT
+	Sname,
+	Sno,
+	Sdept
+FROM
+	Student;
+
+SELECT
+	*
+FROM
+	Student;
+
+SELECT
+	parent_id,
+	parent_id + 1000
+FROM
+	`comment`;
+
+SELECT
+	parent_id,
+	'parent_id+1000=',
+	parent_id + 1000
+FROM
+	`comment`;
+
+SELECT
+	parent_id,
+	parent_id + 1000 'parent_id+1000='
+FROM
+	`comment`;
+
+SELECT DISTINCT
+	topic
+FROM
+	`comment`;
+
+SELECT
+	topic,
+	title
+FROM
+	`comment`
+WHERE
+	topic = '联通';
+
+SELECT
+	topic,
+	title
+FROM
+	`comment`
+WHERE
+	topic = '联通';
+
+SELECT
+	topic,
+	parent_id
+FROM
+	`comment`
+WHERE
+	parent_id BETWEEN 0
+AND 1000000000
+ORDER BY
+	parent_id DESC;
+
+SELECT
+	topic,
+	parent_id
+FROM
+	`comment`
+WHERE
+	topic NOT IN ('电信', '联通');
+
+SELECT
+	topic,
+	parent_id
+FROM
+	`comment`
+WHERE
+	topic LIKE '电_';
+
+SELECT
+	topic,
+	parent_id
+FROM
+	`comment`
+WHERE
+	topic NOT LIKE '电%';
+
+SELECT
+	topic,
+	parent_id,
+	post_content
+FROM
+	`comment`
+WHERE
+	post_content LIKE '%\_%' ESCAPE '\\';
+
+SELECT
+	topic,
+	parent_id,
+	post_content
+FROM
+	`comment`
+WHERE
+	post_content IS NULL;
+
+SELECT
+	topic,
+	parent_id
+FROM
+	`comment`
+WHERE
+	topic NOT LIKE '电%'
+AND topic NOT LIKE '联%';
+
+SELECT
+	topic,
+	parent_id
+FROM
+	`comment`
+WHERE
+	topic NOT LIKE '电%'
+OR topic NOT LIKE '联%';
+
+SELECT
+	topic,
+	parent_id,
+	post_id
+FROM
+	`comment`
+WHERE
+	topic NOT LIKE '电%'
+OR topic NOT LIKE '联%'
+ORDER BY
+	post_id ASC;
+
+SELECT
+	COUNT(*)
+FROM
+	`comment`;
+
+SELECT
+	COUNT('电%')
+FROM
+	`comment`;
+
+SELECT
+	COUNT(DISTINCT topic) 'Topic Count'
+FROM
+	`comment`;
+
+SELECT
+	MAX(parent_id)
+FROM
+	`comment`;
+
+SELECT
+	AVG(parent_id)
+FROM
+	`comment`
+WHERE
+	topic LIKE '电%';
+
+SELECT
+	topic,
+	AVG(parent_id)
+FROM
+	`comment`
+GROUP BY
+	topic;
+
+SELECT
+	topic,
+	AVG(parent_id)
+FROM
+	`comment`
+GROUP BY
+	topic
+HAVING
+	AVG(parent_id) > 3000000000;
+
+USE big_data;
+
+SELECT
+	product.*, product_brand.*
+FROM
+	product,
+	product_brand
+WHERE
+	product.brand = product_brand.brand_name;
+
+SELECT
+	a.*, b.*
+FROM
+	product a,
+	product_brand b
+WHERE
+	a.brand_id = b.brand_id;
+
+SELECT
+	a.*, b.*
+FROM
+	product a,
+	product_brand b
+WHERE
+	a.brand_id (*) = b.brand_id;
+
+SELECT
+	a.*, b.*
+FROM
+	product a
+LEFT JOIN product_brand b ON a.brand = b.brand_name
+WHERE
+	b.brand_id IS NULL;
+
+SELECT
+	COUNT(*)
+FROM
+	product a
+WHERE
+	a.brand IN (
+		SELECT
+			b.brand_name
+		FROM
+			product_brand b
+		WHERE
+			b.brand_id = 1
+	);
+
+CREATE TABLE Course2 LIKE Course;
+
+INSERT INTO Course
+VALUE
+	('A', 'B', 'c', 54);
+
+INSERT INTO Course (Cno, Cname)
+VALUE
+	('D', 'f');
+
+INSERT INTO Course2 (SELECT * FROM Course);
+
+UPDATE Course2
+SET Cpno = 0
+WHERE
+	Cno IS NOT NULL;
+
+CREATE VIEW ViewTest AS SELECT
+	a.product_name,
+	a.product_no,
+	b.brand_id
+FROM
+	product a
+LEFT JOIN product_brand b ON a.brand = b.brand_name
+WHERE
+	b.brand_id IS NULL;
+
+CREATE VIEW ViewTest2 (
+	product_name,
+	product_no,
+	product_nop1,
+	brand_id
+) AS SELECT
+	a.product_name,
+	a.product_no,
+	a.product_no + 1,
+	b.brand_id
+FROM
+	product a
+LEFT JOIN product_brand b ON a.brand = b.brand_name
+WHERE
+	b.brand_id IS NULL;
+
+
